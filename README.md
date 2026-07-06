@@ -1,3 +1,9 @@
+> LICENSE:
+>     This software is licensed under the GNU General Public License v2
+>       which is available at: http://www.gnu.org/licenses/gpl-2.0.txt
+>     This requires any released modifications to be licensed similarly,
+>       and to have the source available.
+
 # Bombchu-Benchmark
 
 **Bombchu Benchmark** is an **early-stage** system-level performance profiling tool for the Nintendo GameCube and Wii homebrew ecosystem, built with devkitPro and libogc2.
