@@ -1,69 +1,75 @@
 #---------------------------------------------------------------------------------
-# Bombchu-Benchmark Makefile
+# Bombchu Benchmark - Modern Makefile
 #---------------------------------------------------------------------------------
 
+# Ensure DEVKITPPC is set
 ifeq ($(strip $(DEVKITPPC)),)
-$(error "Please set DEVKITPPC in your environment. export DEVKITPPC=<path to>devkitPPC")
+$(error "Please set DEVKITPPC in your environment. export DEVKITPPC=<path>/devkitPPC")
 endif
 
-# Target name
-TARGET      := bombchu
+#---------------------------------------------------------------------------------
+# Project settings
+#---------------------------------------------------------------------------------
 
-# Build directory
-BUILD       := build
+TARGET        := bombchu
+BUILD         := build
 
 # Source directories
-SOURCES     := src benchmarks
-INCLUDES    := include
+SOURCES       := src benchmarks
+INCLUDES      := include
 
 #---------------------------------------------------------------------------------
-# Options
+# Compiler flags
 #---------------------------------------------------------------------------------
-CFLAGS      := -g -Wall -O2 -fomit-frame-pointer
-CFLAGS      += -Iinclude
-CXXFLAGS    := $(CFLAGS)
 
-# Libraries
-LIBS        := -logc -lm
+CFLAGS        := -g -Wall -O2 -fomit-frame-pointer
+CFLAGS        += -I$(INCLUDES)
+CXXFLAGS      := $(CFLAGS)
 
-# Platform selection (default: both, or specify make TARGET_SYSTEM=gamecube)
-TARGET_SYSTEM ?= auto
+LIBS          := -logc -lm
 
-# Include rules
+#---------------------------------------------------------------------------------
+# Platform selection
+#---------------------------------------------------------------------------------
+
+TARGET_SYSTEM ?= wii
+
 ifeq ($(TARGET_SYSTEM),gamecube)
-    include $(DEVKITPRO)/libogc2/gamecube_rules
-else ifeq ($(TARGET_SYSTEM),wii)
-    include $(DEVKITPRO)/libogc2/wii_rules
+include $(DEVKITPRO)/libogc2/gamecube_rules
 else
-    # Default: build both if possible, or set one
-    include $(DEVKITPPC)/gamecube_rules
+include $(DEVKITPRO)/libogc2/wii_rules
 endif
 
 #---------------------------------------------------------------------------------
 # Automatic source discovery
 #---------------------------------------------------------------------------------
+
 # Find all .c files in src/ and benchmarks/
-CFILES      := $(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.c)))
-OFILES      := $(CFILES:.c=.o)
-OUTPUT      := $(TARGET)
+CFILES        := $(foreach dir,$(SOURCES),$(wildcard $(dir)/*.c))
+OFILES        := $(CFILES:.c=.o)
 
 #---------------------------------------------------------------------------------
 # Build rules
 #---------------------------------------------------------------------------------
-all: $(OUTPUT).dol
 
-$(OUTPUT).dol: $(OUTPUT).elf
+all: $(TARGET).dol
+
+$(TARGET).dol: $(TARGET).elf
     $(ELF2DOL) $< $@
 
-$(OUTPUT).elf: $(OFILES)
+$(TARGET).elf: $(OFILES)
     $(LD) $(LDFLAGS) $(OFILES) $(LIBPATHS) $(LIBS) -o $@
 
-%.o: $(SOURCES)/%.c
-    $(CC) $(CFLAGS) $(INCLUDE) -c $< -o $@
+# Pattern rules for each source directory
+src/%.o: src/%.c
+    $(CC) $(CFLAGS) -c $< -o $@
+
+benchmarks/%.o: benchmarks/%.c
+    $(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-    @echo clean ...
-    @rm -fr $(BUILD) $(OFILES) $(OUTPUT).elf $(OUTPUT).dol
+    @echo "Cleaning..."
+    @rm -f $(OFILES) $(TARGET).elf $(TARGET).dol
 
-run: $(OUTPUT).dol
-    wiiload $(OUTPUT).dol
+run: $(TARGET).dol
+    wiiload $(TARGET).dol
