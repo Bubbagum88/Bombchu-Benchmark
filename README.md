@@ -1,8 +1,10 @@
 > LICENSE:
->     This software is licensed under the GNU General Public License v2
->       which is available at: http://www.gnu.org/licenses/gpl-2.0.txt
->     This requires any released modifications to be licensed similarly,
->       and to have the source available.
+>    This software is licensed under the GNU General Public License v3.0
+>    or later, which is available at: https://www.gnu.org/licenses/gpl-3.0.txt
+>
+>    This license requires that any distributed modified versions
+>    must also be licensed under the same terms and must make
+>    the corresponding source code available.
 
 # Bombchu-Benchmark
 
