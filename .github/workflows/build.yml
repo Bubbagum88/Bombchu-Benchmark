@@ -14,15 +14,18 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
 
-    - name: Install devkitPPC
+    - name: Install devkitPro pacman
       run: |
         sudo apt-get update
         sudo apt-get install -y wget xz-utils
-        wget https://github.com/devkitPro/pacman/releases/download/devkitpro-pacman-1.0.3/devkitpro-pacman.deb
-        sudo dpkg -i devkitpro-pacman.deb
+        wget https://apt.devkitpro.org/install-devkitpro-pacman
+        sudo bash install-devkitpro-pacman
+
+    - name: Install devkitPPC + libogc
+      run: |
         sudo dkp-pacman -S --noconfirm devkitPPC libogc
 
-    - name: Set DEVKITPPC
+    - name: Set DEVKITPPC environment variable
       run: echo "DEVKITPPC=/opt/devkitpro/devkitPPC" >> $GITHUB_ENV
 
     - name: Build project
