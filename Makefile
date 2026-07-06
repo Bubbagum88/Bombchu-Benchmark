@@ -1,22 +1,21 @@
 #---------------------------------------------------------------------------------
-# Bombchu Benchmark - Clean devkitPPC Build
+# Bombchu Benchmark - Flat header layout (no include/)
 #---------------------------------------------------------------------------------
 
 TARGET := bombchu
 
-SOURCES := src benchmarks
-INCLUDES := include
+SOURCES := src benchmarks ui
 
 #---------------------------------------------------------------------------------
-# Toolchain sanity check
+# Toolchain sanity
 #---------------------------------------------------------------------------------
-
-ifeq ($(strip $(DEVKITPPC)),)
-$(error DEVKITPPC is not set. Please install devkitPro correctly.)
-endif
 
 ifeq ($(strip $(DEVKITPRO)),)
-$(error DEVKITPRO is not set. Please install devkitPro correctly.)
+$(error DEVKITPRO is not set)
+endif
+
+ifeq ($(strip $(DEVKITPPC)),)
+$(error DEVKITPPC is not set)
 endif
 
 #---------------------------------------------------------------------------------
@@ -27,17 +26,17 @@ CFILES := $(foreach dir,$(SOURCES),$(wildcard $(dir)/*.c))
 OFILES := $(CFILES:.c=.o)
 
 #---------------------------------------------------------------------------------
-# libogc2 rules (IMPORTANT)
+# libogc2 rules
 #---------------------------------------------------------------------------------
 
 include $(DEVKITPRO)/libogc2/wii_rules
 
 #---------------------------------------------------------------------------------
-# Compiler flags
+# Flags
 #---------------------------------------------------------------------------------
 
 CFLAGS += -Wall -O2 -g
-CFLAGS += -I$(INCLUDES)
+CFLAGS += -Isrc -Ibenchmarks -Iui
 CFLAGS += -I$(DEVKITPRO)/libogc2/include
 CFLAGS += -DGEKKO -DHW_RVL -mrvl
 
@@ -45,24 +44,24 @@ CFLAGS += -DGEKKO -DHW_RVL -mrvl
 # Targets
 #---------------------------------------------------------------------------------
 
-.PHONY: all clean run
+.PHONY: all clean
 
 all: $(TARGET).dol
 
 $(TARGET).elf: $(OFILES)
-	$(CC) $(OFILES) $(LDFLAGS) $(LIBS) -o $@
+    $(CC) $(OFILES) $(LDFLAGS) $(LIBS) -o $@
 
 $(TARGET).dol: $(TARGET).elf
-	$(ELF2DOL) $< $@
+    $(ELF2DOL) $< $@
 
 src/%.o: src/%.c
-	$(CC) $(CFLAGS) -c $< -o $@
+    $(CC) $(CFLAGS) -c $< -o $@
 
 benchmarks/%.o: benchmarks/%.c
-	$(CC) $(CFLAGS) -c $< -o $@
+    $(CC) $(CFLAGS) -c $< -o $@
+
+ui/%.o: ui/%.c
+    $(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -f $(OFILES) $(TARGET).elf $(TARGET).dol
-
-run: $(TARGET).dol
-	wiiload $(TARGET).dol
+    rm -f $(OFILES) $(TARGET).elf $(TARGET).dol
