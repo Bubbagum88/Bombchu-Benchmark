@@ -1,5 +1,5 @@
 #---------------------------------------------------------------------------------
-# Bombchu Benchmark - Flat header layout (no include/)
+# Bombchu Benchmark - Flat header layout
 #---------------------------------------------------------------------------------
 
 TARGET := bombchu
