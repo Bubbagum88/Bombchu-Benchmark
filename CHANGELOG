@@ -1,3 +1,41 @@
+# CHANGELOG
+All notable changes to this project will be documented in this file.
+
+The format is based on Keep a Changelog (https://keepachangelog.com/en/1.0.0/)
+and this project adheres to Semantic Versioning.
+
+## [Unreleased]
+- Storage benchmarking module (SD, USB)
+- Network benchmarking module
+- CPU benchmarking (PowerPC)
+- Filesystem analysis tools
+- GX-based UI engine
+- Theme-driven UI system
+
+## [2026-07-06] Repository Cleanup & Asset Organization
+### Added
+- Added full Bombchu ASCII set to `images/bombchu/`
+- Added full Title ASCII set to `images/title/`
+- Added PNG/WebP assets to `images/`
+- Added `ui/ui_theme_selector.h` for future UI system
+
+### Changed
+- Updated README license from GPLv2 → GPLv3
+- Updated repository structure for UI asset management
+- Refactored `.gitignore` to streamline ignored files
+- Updated README to reflect project direction
+
+### Removed
+- Removed legacy root-level ASCII files
+- Removed placeholder `main()` and video setup code from `src/`
+
+## [2026-07-05] Initial Project Setup
+### Added
+- Initial repository structure
+- Makefile for building Bombchu Benchmark
+- LICENSE (GPLv3)
+- Contribution guidelines
+- Basic README with project overview
 ## [2026-07-06] Repository Cleanup & Asset Organization
 - Added full Bombchu ASCII set to `images/bombchu/`
 - Added full Title ASCII set to `images/title/`
