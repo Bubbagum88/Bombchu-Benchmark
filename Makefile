@@ -35,9 +35,9 @@ LIBS := -logc -lm
 TARGET_SYSTEM ?= wii
 
 ifeq ($(TARGET_SYSTEM),gamecube)
-include $(DEVKITPPC)/gamecube_rules
+include $(DEVKITPRO)/libogc/gamecube_rules
 else
-include $(DEVKITPPC)/wii_rules
+include $(DEVKITPRO)/libogc/wii_rules
 endif
 
 #---------------------------------------------------------------------------------
