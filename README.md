@@ -43,25 +43,21 @@ Benchmark modules are not yet implemented, but the foundation for UI, assets, an
 
 ---
 
+## Repository Structure
+
 images/
-    bombchu/      # Bombchu ASCII art frames
-    title/        # Title screen ASCII art frames
-    # (future) loading/
-    # (future) menu/
+bombchu/      # Bombchu ASCII art frames
+title/        # Title screen ASCII art frames
+# (future) loading/
+# (future) menu/
 
 src/
-    # Source code modules (future)
-    # Benchmark implementations will live here
+# Source code modules (future)
+# Benchmark implementations will live here
 
 ui/
-    ui_theme_selector.h   # Early UI scaffolding for theme-driven interface
+ui_theme_selector.h   # Early UI scaffolding for theme-driven interface
 
-Makefile                  # Build script for devkitPPC
-CHANGELOG                 # Project history and updates
-LICENSE                   # GPLv3 license
-README.md                 # Project overview and documentation
-contributions.md          # Contribution guidelines
-.gitignore                # Streamlined ignore rules
 
 ---
 
