@@ -55,3 +55,14 @@ void ui_draw_title(const char *title) {
     printf("\x1b[2;0H");
     ui_draw_text(4, 2, title);
 }
+void ui_draw_benchmark_menu(const char** names, int selected) {
+    printf("\x1b[2J");
+    printf("Select Benchmark\n\n");
+
+    for (int i = 0; i < 4; i++) {
+        if (i == selected)
+            printf(" > %s\n", names[i]);
+        else
+            printf("   %s\n", names[i]);
+    }
+}
