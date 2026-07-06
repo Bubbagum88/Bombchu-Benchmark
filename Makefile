@@ -53,23 +53,21 @@ OFILES        := $(CFILES:.c=.o)
 #---------------------------------------------------------------------------------
 
 all: $(TARGET).dol
-
 $(TARGET).dol: $(TARGET).elf
-    $(ELF2DOL) $< $@
+<TAB>$(ELF2DOL) $< $@
 
 $(TARGET).elf: $(OFILES)
-    $(LD) $(LDFLAGS) $(OFILES) $(LIBPATHS) $(LIBS) -o $@
+<TAB>$(LD) $(LDFLAGS) $(OFILES) $(LIBPATHS) $(LIBS) -o $@
 
-# Pattern rules for each source directory
 src/%.o: src/%.c
-    $(CC) $(CFLAGS) -c $< -o $@
+<TAB>$(CC) $(CFLAGS) -c $< -o $@
 
 benchmarks/%.o: benchmarks/%.c
-    $(CC) $(CFLAGS) -c $< -o $@
+<TAB>$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-    @echo "Cleaning..."
-    @rm -f $(OFILES) $(TARGET).elf $(TARGET).dol
+<TAB>@echo "Cleaning..."
+<TAB>@rm -f $(OFILES) $(TARGET).elf $(TARGET).dol
 
 run: $(TARGET).dol
-    wiiload $(TARGET).dol
+<TAB>wiiload $(TARGET).dol
