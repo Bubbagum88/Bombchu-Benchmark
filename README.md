@@ -44,4 +44,35 @@ Benchmark modules are not yet implemented, but the foundation for UI, assets, an
 ---
 
 ## Repository Structure
+images/
+bombchu/      # Bombchu ASCII art
+title/        # Title screen ASCII art
+src/
+# Source code modules (future)
+ui/
+ui_theme_selector.h   # Early UI scaffolding
+Makefile
+CHANGELOG
+LICENSE
+README.md
+contributions.md
 
+---
+
+## Build Instructions
+
+### Requirements
+- [devkitPro](https://devkitpro.org/) (devkitPPC)
+- libogc2
+
+### Compile
+```bash
+make
+```
+Contributing
+
+Contributions are welcome!
+Please see contributions.md for guidelines on submitting patches, reporting issues, and participating in development.
+
+
+---
