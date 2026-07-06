@@ -49,19 +49,19 @@ CFLAGS += -DGEKKO -DHW_RVL -mrvl
 all: $(TARGET).dol
 
 $(TARGET).elf: $(OFILES)
-    $(CC) $(OFILES) $(LDFLAGS) $(LIBS) -o $@
+	$(CC) $(OFILES) $(LDFLAGS) $(LIBS) -o $@
 
 $(TARGET).dol: $(TARGET).elf
-    $(ELF2DOL) $< $@
+	$(ELF2DOL) $< $@
 
 src/%.o: src/%.c
-    $(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $@
 
 benchmarks/%.o: benchmarks/%.c
-    $(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $@
 
 ui/%.o: ui/%.c
-    $(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-    rm -f $(OFILES) $(TARGET).elf $(TARGET).dol
+	rm -f $(OFILES) $(TARGET).elf $(TARGET).dol
