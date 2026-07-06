@@ -12,7 +12,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Install devkitPPC
       run: |
@@ -23,13 +23,13 @@ jobs:
         sudo dkp-pacman -S --noconfirm devkitPPC libogc
 
     - name: Set DEVKITPPC
-      run: echo "DEVKITPPC=/opt/devkitpro/devkitPPC" >> \
+      run: echo "DEVKITPPC=/opt/devkitpro/devkitPPC" >> $GITHUB_ENV
 
     - name: Build project
       run: make
 
     - name: Upload DOL artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: bombchu.dol
         path: bombchu.dol
