@@ -1,9 +1,7 @@
-name: Build Bombchu Benchmark
+name: Debug Toolchain
 
 on:
   push:
-    branches: [ main ]
-  pull_request:
     branches: [ main ]
 
 jobs:
@@ -14,21 +12,15 @@ jobs:
       image: devkitpro/devkitppc:latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Inspect devkitPro toolchain
+      - name: Print environment
         run: |
           echo "DEVKITPRO=$DEVKITPRO"
           echo "DEVKITPPC=$DEVKITPPC"
-          find /opt/devkitpro -maxdepth 4 -type d | grep -i ogc || true
+          ls -R /opt/devkitpro || true
+
+      - name: Find libogc
+        run: |
           find /opt/devkitpro -name gccore.h || true
-
-      - name: Build project
-        run: make
-
-      - name: Upload DOL artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: bombchu.dol
-          path: bombchu.dol
+          find /opt/devkitpro -maxdepth 5 -type d | grep -i ogc || true
