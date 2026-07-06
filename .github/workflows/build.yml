@@ -10,26 +10,12 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    container:
+      image: devkitpro/devkitppc:latest
+
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
-
-    - name: Add devkitPro APT repository
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y wget gnupg
-        wget https://apt.devkitpro.org/devkitpro-archive-keyring.gpg
-        sudo install -o root -g root -m 644 devkitpro-archive-keyring.gpg /usr/share/keyrings/devkitpro-archive-keyring.gpg
-        echo "deb [signed-by=/usr/share/keyrings/devkitpro-archive-keyring.gpg] https://apt.devkitpro.org/ stable main" | sudo tee /etc/apt/sources.list.d/devkitpro.list
-        sudo apt-get update
-
-    - name: Install devkitPPC + libogc
-      run: |
-        sudo apt-get install -y devkitpro-pacman
-        sudo dkp-pacman -S --noconfirm devkitPPC libogc
-
-    - name: Set DEVKITPPC environment variable
-      run: echo "DEVKITPPC=/opt/devkitpro/devkitPPC" >> $GITHUB_ENV
 
     - name: Build project
       run: make
