@@ -1,51 +1,33 @@
 #---------------------------------------------------------------------------------
-# Bombchu Benchmark - Modern Makefile
-#---------------------------------------------------------------------------------
-
-# Ensure DEVKITPPC is set
-ifeq ($(strip $(DEVKITPPC)),)
-$(error Please set DEVKITPPC in your environment. export DEVKITPPC=<path>/devkitPPC)
-endif
-
-#---------------------------------------------------------------------------------
-# Project settings
+# Bombchu Benchmark - Clean devkitPPC Makefile
 #---------------------------------------------------------------------------------
 
 TARGET := bombchu
-BUILD := build
+BUILD  := build
 
-# Source directories
 SOURCES := src benchmarks
 INCLUDES := include
 
-#---------------------------------------------------------------------------------
-# Compiler flags
-#---------------------------------------------------------------------------------
-
-CFLAGS := -g -Wall -O2 -fomit-frame-pointer
-CFLAGS += -I$(INCLUDES)
-CXXFLAGS := $(CFLAGS)
-
-LIBS := -logc -lm
-
-#---------------------------------------------------------------------------------
-# Platform selection
-#---------------------------------------------------------------------------------
-
 TARGET_SYSTEM ?= wii
-
-ifeq ($(TARGET_SYSTEM),gamecube)
-include $(DEVKITPRO)/libogc/gamecube_rules
-else
-include $(DEVKITPRO)/libogc/wii_rules
-endif
-
-#---------------------------------------------------------------------------------
-# Automatic source discovery
-#---------------------------------------------------------------------------------
 
 CFILES := $(foreach dir,$(SOURCES),$(wildcard $(dir)/*.c))
 OFILES := $(CFILES:.c=.o)
+
+CFLAGS := -g -Wall -O2 -fomit-frame-pointer
+CFLAGS += -I$(INCLUDES)
+
+LDFLAGS :=
+LIBS := -logc -lm
+
+#---------------------------------------------------------------------------------
+# devkitPro setup
+#---------------------------------------------------------------------------------
+
+ifeq ($(strip $(DEVKITPPC)),)
+$(error DEVKITPPC is not set)
+endif
+
+include $(DEVKITPPC)/wii_rules
 
 #---------------------------------------------------------------------------------
 # Build rules
@@ -55,11 +37,11 @@ OFILES := $(CFILES:.c=.o)
 
 all: $(TARGET).dol
 
+$(TARGET).elf: $(OFILES)
+	$(CC) $(CFLAGS) $(OFILES) $(LDFLAGS) $(LIBS) -o $@
+
 $(TARGET).dol: $(TARGET).elf
 	$(ELF2DOL) $< $@
-
-$(TARGET).elf: $(OFILES)
-	$(LD) $(LDFLAGS) $(OFILES) $(LIBPATHS) $(LIBS) -o $@
 
 src/%.o: src/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
@@ -68,8 +50,7 @@ benchmarks/%.o: benchmarks/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	@echo "Cleaning..."
-	@rm -f $(OFILES) $(TARGET).elf $(TARGET).dol
+	rm -f $(OFILES) $(TARGET).elf $(TARGET).dol
 
 run: $(TARGET).dol
 	wiiload $(TARGET).dol
