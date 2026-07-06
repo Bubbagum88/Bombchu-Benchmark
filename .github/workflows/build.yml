@@ -14,14 +14,21 @@ jobs:
       image: devkitpro/devkitppc:latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Build project
-      run: make
+      - name: Inspect devkitPro toolchain
+        run: |
+          echo "DEVKITPRO=$DEVKITPRO"
+          echo "DEVKITPPC=$DEVKITPPC"
+          find /opt/devkitpro -maxdepth 4 -type d | grep -i ogc || true
+          find /opt/devkitpro -name gccore.h || true
 
-    - name: Upload DOL artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: bombchu.dol
-        path: bombchu.dol
+      - name: Build project
+        run: make
+
+      - name: Upload DOL artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: bombchu.dol
+          path: bombchu.dol
