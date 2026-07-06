@@ -1,0 +1,7 @@
+## [2026-07-06] Repository Cleanup & Asset Organization
+- Added full Bombchu ASCII set to `images/bombchu/`
+- Added full Title ASCII set to `images/title/`
+- Moved all image assets (PNG/WebP) into `images/`
+- Removed legacy root-level ASCII files
+- Standardized repository structure for UI asset management
+- Updated README to reflect new directory layout
