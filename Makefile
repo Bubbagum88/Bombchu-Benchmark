@@ -65,3 +65,4 @@ clean:
 
 run: $(OUTPUT).dol
 	wiiload $(OUTPUT).dol   # or use your loader
+SRC += src/storage_benchmark.c
