@@ -4,29 +4,29 @@
 
 # Ensure DEVKITPPC is set
 ifeq ($(strip $(DEVKITPPC)),)
-$(error "Please set DEVKITPPC in your environment. export DEVKITPPC=<path>/devkitPPC")
+$(error Please set DEVKITPPC in your environment. export DEVKITPPC=<path>/devkitPPC)
 endif
 
 #---------------------------------------------------------------------------------
 # Project settings
 #---------------------------------------------------------------------------------
 
-TARGET        := bombchu
-BUILD         := build
+TARGET := bombchu
+BUILD := build
 
 # Source directories
-SOURCES       := src benchmarks
-INCLUDES      := include
+SOURCES := src benchmarks
+INCLUDES := include
 
 #---------------------------------------------------------------------------------
 # Compiler flags
 #---------------------------------------------------------------------------------
 
-CFLAGS        := -g -Wall -O2 -fomit-frame-pointer
-CFLAGS        += -I$(INCLUDES)
-CXXFLAGS      := $(CFLAGS)
+CFLAGS := -g -Wall -O2 -fomit-frame-pointer
+CFLAGS += -I$(INCLUDES)
+CXXFLAGS := $(CFLAGS)
 
-LIBS          := -logc -lm
+LIBS := -logc -lm
 
 #---------------------------------------------------------------------------------
 # Platform selection
@@ -44,30 +44,32 @@ endif
 # Automatic source discovery
 #---------------------------------------------------------------------------------
 
-# Find all .c files in src/ and benchmarks/
-CFILES        := $(foreach dir,$(SOURCES),$(wildcard $(dir)/*.c))
-OFILES        := $(CFILES:.c=.o)
+CFILES := $(foreach dir,$(SOURCES),$(wildcard $(dir)/*.c))
+OFILES := $(CFILES:.c=.o)
 
 #---------------------------------------------------------------------------------
 # Build rules
 #---------------------------------------------------------------------------------
 
+.PHONY: all clean run
+
 all: $(TARGET).dol
+
 $(TARGET).dol: $(TARGET).elf
-<TAB>$(ELF2DOL) $< $@
+	$(ELF2DOL) $< $@
 
 $(TARGET).elf: $(OFILES)
-<TAB>$(LD) $(LDFLAGS) $(OFILES) $(LIBPATHS) $(LIBS) -o $@
+	$(LD) $(LDFLAGS) $(OFILES) $(LIBPATHS) $(LIBS) -o $@
 
 src/%.o: src/%.c
-<TAB>$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $@
 
 benchmarks/%.o: benchmarks/%.c
-<TAB>$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-<TAB>@echo "Cleaning..."
-<TAB>@rm -f $(OFILES) $(TARGET).elf $(TARGET).dol
+	@echo "Cleaning..."
+	@rm -f $(OFILES) $(TARGET).elf $(TARGET).dol
 
 run: $(TARGET).dol
-<TAB>wiiload $(TARGET).dol
+	wiiload $(TARGET).dol
