@@ -25,3 +25,10 @@ Thumbs.db
 
 # Backup files
 *~
+
+# Visual Studio
+.vs/
+
+# Linker maps and dependency files
+*.map
+*.d

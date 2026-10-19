@@ -21,7 +21,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
 
     - name: Install libogc2
       run: |
@@ -35,7 +35,7 @@ jobs:
       run: make PLATFORM=${{ matrix.platform }}
 
     - name: Upload DOL artifact
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: bombchu-${{ matrix.platform }}
         path: bombchu-${{ matrix.platform }}.dol
