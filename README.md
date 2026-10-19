@@ -1,12 +1,4 @@
-> LICENSE:
->    This software is licensed under the GNU General Public License v3.0
->    or later, which is available at: https://www.gnu.org/licenses/gpl-3.0.txt
->
->    This license requires that any distributed modified versions
->    must also be licensed under the same terms and must make
->    the corresponding source code available.
-
-# Bombchu-Benchmark
+# Bombchu Benchmark
 
 **Bombchu Benchmark** is an early-stage system-level performance profiling tool for the Nintendo GameCube and Wii homebrew ecosystem, built with devkitPro and libogc2.
 
@@ -16,75 +8,62 @@ The goal is to provide standardized benchmarks for storage, network, CPU, and fi
 
 ## Current Status
 
-The project is in active early development. The repository now includes:
+Early development. What works today:
 
-- Organized ASCII art assets for Bombchu and Title screens
-- A structured `images/` directory for UI assets
-- Initial UI scaffolding (`ui/`)
-- Basic source layout (`src/`)
-- A working Makefile
-- Contribution guidelines
-- GPLv3 licensing
-- A detailed CHANGELOG documenting project evolution
-
-Benchmark modules are not yet implemented, but the foundation for UI, assets, and build tooling is in place.
-
----
+- Builds for both Wii and GameCube, against libogc2
+- A text-console main menu with a benchmark selector, results screen and theme selector
+- A storage benchmark (SD card write and read throughput)
 
 ## Planned Features (subject to change)
 
-- Storage benchmarking (SD, USB)
+- Storage benchmarking for USB, and more accurate SD numbers
 - Network benchmarking
 - CPU benchmarking (PowerPC-focused)
-- Filesystem analysis
-- GX-based UI engine
-- Theme-driven UI system
+- Filesystem benchmarking
+- GX-based UI engine and themes
 - On-device visualization of benchmark results
 
 ---
+
 ## Repository Structure
 
-images/
-    bombchu/      # Bombchu ASCII art frames
-    title/        # Title screen ASCII art frames
-    # (future) loading/
-    # (future) menu/
-
-src/
-    # Source code modules (future)
-    # Benchmark implementations will live here
-
-ui/
-    ui_theme_selector.h   # Early UI scaffolding for theme-driven interface
-
-Makefile                  # Build script for devkitPPC
-CHANGELOG                 # Project history and updates
-LICENSE                   # GPLv3 license
-README.md                 # Project overview and documentation
-contributions.md          # Contribution guidelines
-.gitignore                # Streamlined ignore rules
-
+```
+benchmarks/          Benchmark modules (storage_benchmark.c)
+include/             Shared headers (benchmark.h, storage_benchmark.h)
+src/                 Entry point and benchmark dispatcher
+ui/                  Console UI: menus, selectors, results screen
+ui/themes/           Theme definitions
+images/bombchu/      Bombchu ASCII art frames
+images/title/        Title screen ASCII art frames
+images/previews/     Rendered previews of the ASCII art
+images/source/       Source artwork the ASCII art was made from
+.github/workflows/   GitHub Actions build
+Makefile             Build script (devkitPPC + libogc2)
+```
 
 ---
 
-## Build Instructions
+## Building
 
 ### Requirements
-- [devkitPro](https://devkitpro.org/) (devkitPPC)
-- libogc2
+- [devkitPro](https://devkitpro.org/) with devkitPPC
+- [libogc2](https://github.com/extremscorner/libogc2) (see its README to add the package repository)
 
 ### Compile
 ```bash
 make                 # Wii build      -> bombchu-wii.dol
 make PLATFORM=gc     # GameCube build -> bombchu-gc.dol
+make OGC=$DEVKITPRO/libogc   # build against stock libogc instead of libogc2
 ```
 
 Every push and pull request is also built by GitHub Actions for both platforms. The `.dol` files are attached to each run as artifacts, and the workflow can be started by hand from the Actions tab.
 
-Contributing
-
-Contributions are welcome!
-Please see contributions.md for guidelines on submitting patches, reporting issues, and participating in development.
-
-
 ---
+
+## Contributing
+
+Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on submitting patches, reporting issues, and participating in development.
+
+## License
+
+This software is licensed under the GNU General Public License v3.0 or later. See [LICENSE](LICENSE).

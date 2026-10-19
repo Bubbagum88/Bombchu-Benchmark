@@ -5,12 +5,33 @@ The format is based on Keep a Changelog (https://keepachangelog.com/en/1.0.0/)
 and this project adheres to Semantic Versioning.
 
 ## [Unreleased]
-- Storage benchmarking module (SD, USB)
+### Planned
 - Network benchmarking module
 - CPU benchmarking (PowerPC)
-- Filesystem analysis tools
+- Filesystem benchmarking module
+- USB storage support
 - GX-based UI engine
-- Theme-driven UI system
+
+## [2026-10-19] Working Build, libogc2 and Repository Tidy
+### Added
+- GameCube build target (`make PLATFORM=gc`) alongside the Wii build
+- CI builds both platforms, uploads `bombchu-wii.dol` and `bombchu-gc.dol`, and can be run by hand
+- Benchmark selector and results screen reachable from the main menu
+- `.gitattributes` to keep LF line endings
+
+### Changed
+- Builds against libogc2 by default; CI installs it from the libogc2 package repository
+- Makefile rewritten: object files go in `build/<platform>`, header changes trigger rebuilds
+- Themes use console colours until a GX renderer exists
+- Menus only redraw when input changes
+- Image assets sorted into `images/source/` and `images/previews/`
+- `contributions.md` renamed to `CONTRIBUTING.md`, `CHANGELOG` to `CHANGELOG.md`
+
+### Fixed
+- Build failures from headers removed with `include/`, duplicate and missing symbols, and missing link libraries
+
+### Removed
+- `ui/ui_screens.c`, an older duplicate of the theme selector
 
 ## [2026-07-06] Repository Cleanup & Asset Organization
 ### Added
@@ -36,10 +57,3 @@ and this project adheres to Semantic Versioning.
 - LICENSE (GPLv3)
 - Contribution guidelines
 - Basic README with project overview
-## [2026-07-06] Repository Cleanup & Asset Organization
-- Added full Bombchu ASCII set to `images/bombchu/`
-- Added full Title ASCII set to `images/title/`
-- Moved all image assets (PNG/WebP) into `images/`
-- Removed legacy root-level ASCII files
-- Standardized repository structure for UI asset management
-- Updated README to reflect new directory layout
