@@ -75,8 +75,12 @@ contributions.md          # Contribution guidelines
 
 ### Compile
 ```bash
-make
+make                 # Wii build      -> bombchu-wii.dol
+make PLATFORM=gc     # GameCube build -> bombchu-gc.dol
 ```
+
+Every push and pull request is also built by GitHub Actions for both platforms. The `.dol` files are attached to each run as artifacts, and the workflow can be started by hand from the Actions tab.
+
 Contributing
 
 Contributions are welcome!

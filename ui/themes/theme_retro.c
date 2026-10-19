@@ -1,9 +1,13 @@
+#include <stdio.h>
+#include "theme.h"
+
 static void drawBackground_retro(void) {
-    draw_checkerboard();
+    printf("\x1b[40m\x1b[32m");   // black background, green text
 }
 
 static void drawHighlight_retro(int x, int y, int w, int h) {
-    draw_rect(x, y, w, h, (GXColor){255,255,0,200});
+    (void)w; (void)h;
+    printf("\x1b[%d;%dH\x1b[33m>\x1b[32m", y, x);
 }
 
 UITheme theme_retro = {

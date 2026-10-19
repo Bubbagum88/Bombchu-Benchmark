@@ -5,6 +5,7 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -13,15 +14,21 @@ jobs:
     container:
       image: devkitpro/devkitppc:latest
 
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [ wii, gc ]
+
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
 
     - name: Build project
-      run: make
+      run: make PLATFORM=${{ matrix.platform }}
 
     - name: Upload DOL artifact
       uses: actions/upload-artifact@v4
       with:
-        name: bombchu
-        path: bombchu.dol
+        name: bombchu-${{ matrix.platform }}
+        path: bombchu-${{ matrix.platform }}.dol
+        if-no-files-found: error

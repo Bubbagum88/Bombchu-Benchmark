@@ -4,25 +4,15 @@
 #include "theme.h"
 
 // Active theme pointer (set by theme selector)
-UITheme *currentTheme = NULL;
+UITheme *currentTheme = &theme_default;
 
-// Internal GX frame begin/end helpers
-static void ui_begin_frame(void) {
-    GX_SetCopyClear(currentTheme->bgColor, 0x00ffffff);
-    GX_InvalidateTexAll();
-    GX_SetZMode(GX_FALSE, GX_LEQUAL, GX_FALSE);
-    GX_SetColorUpdate(GX_TRUE);
-    GX_SetAlphaUpdate(GX_TRUE);
+// Clear the console using the active theme's colours
+void ui_clear_screen(void) {
+    currentTheme->drawBackground();
+    printf("\x1b[2J");
 }
 
-static void ui_end_frame(void) {
-    GX_DrawDone();
-    VIDEO_SetNextFramebuffer(xfb);
-    VIDEO_Flush();
-    VIDEO_WaitVSync();
-}
-
-// Draw text using the theme's font settings
+// Draw text at a console row/column
 void ui_draw_text(int x, int y, const char *msg) {
     // For now, use console text (simple)
     // Later: replace with GX font renderer
@@ -32,37 +22,45 @@ void ui_draw_text(int x, int y, const char *msg) {
 // Draw a menu item with highlight if selected
 void ui_draw_menu_item(const char *label, int x, int y, int selected) {
     if (selected) {
-        currentTheme->drawHighlight(x - 2, y - 1, 300, currentTheme->lineSpacing);
+        currentTheme->drawHighlight(x - 2, y, 300, currentTheme->lineSpacing);
     }
     ui_draw_text(x, y, label);
 }
 
-// Draw a full menu screen
+// Draw a menu, one item per console row starting at row 4
 void ui_draw_menu(const char **items, int count, int selected) {
-    printf("\x1b[2J");      // Clear screen
-    printf("\x1b[2;0H");    // Reset cursor
-
-    currentTheme->drawBackground();
-
     for (int i = 0; i < count; i++) {
-        int y = 4 + i * (currentTheme->lineSpacing / 2);
-        ui_draw_menu_item(items[i], 4, y, (i == selected));
+        ui_draw_menu_item(items[i], 4, 4 + i, (i == selected));
     }
 }
 
-// Draw a simple centered title
+// Draw a simple title on row 2
 void ui_draw_title(const char *title) {
-    printf("\x1b[2;0H");
     ui_draw_text(4, 2, title);
 }
-void ui_draw_benchmark_menu(const char** names, int selected) {
-    printf("\x1b[2J");
-    printf("Select Benchmark\n\n");
 
-    for (int i = 0; i < 4; i++) {
-        if (i == selected)
-            printf(" > %s\n", names[i]);
-        else
-            printf("   %s\n", names[i]);
+// Show a benchmark result and wait for A or B
+void ui_show_results_screen(const BenchmarkResult *result) {
+    char line[64];
+
+    ui_clear_screen();
+    ui_draw_title(result->name ? result->name : "Benchmark");
+
+    if (result->success) {
+        snprintf(line, sizeof(line), "Duration:   %.0f ms", result->duration_ms);
+        ui_draw_text(4, 4, line);
+        snprintf(line, sizeof(line), "Throughput: %.2f MB/s", result->throughput_mb_s);
+        ui_draw_text(4, 5, line);
+    } else {
+        ui_draw_text(4, 4, "Benchmark failed.");
+    }
+
+    ui_draw_text(4, 8, "Press A to return");
+
+    while (1) {
+        VIDEO_WaitVSync();
+        PAD_ScanPads();
+        if (PAD_ButtonsDown(0) & (PAD_BUTTON_A | PAD_BUTTON_B))
+            return;
     }
 }

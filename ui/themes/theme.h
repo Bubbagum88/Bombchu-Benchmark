@@ -1,3 +1,8 @@
+#ifndef THEME_H
+#define THEME_H
+
+#include <gccore.h>
+
 typedef struct {
     GXColor bgColor;
     GXColor textColor;
@@ -11,3 +16,8 @@ typedef struct {
 } UITheme;
 
 extern UITheme *currentTheme;
+
+extern UITheme theme_default;
+extern UITheme theme_retro;
+
+#endif
