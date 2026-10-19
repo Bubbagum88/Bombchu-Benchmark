@@ -5,6 +5,11 @@ The format is based on Keep a Changelog (https://keepachangelog.com/en/1.0.0/)
 and this project adheres to Semantic Versioning.
 
 ## [Unreleased]
+### Added
+- Homebrew Channel `meta.xml` and `icon.png` in `hbc/`; CI packages them with the Wii build as `apps/bombchu/`
+- Pushing a `v*` tag publishes a GitHub release with the Wii zip and both `.dol` files
+- README sections on downloading, running, controls, requirements and result accuracy, plus build and license badges
+
 ### Planned
 - Network benchmarking module
 - CPU benchmarking (PowerPC)
