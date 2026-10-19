@@ -1,4 +1,4 @@
-#include "benchmark.h"
+#include "storage_benchmark.h"
 #include <fat.h>
 #include <stdio.h>
 #include <stdlib.h>

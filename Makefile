@@ -1,13 +1,9 @@
 #---------------------------------------------------------------------------------
-# Bombchu Benchmark - Flat header layout
-#---------------------------------------------------------------------------------
-
-TARGET := bombchu
-
-SOURCES := src benchmarks ui
-
-#---------------------------------------------------------------------------------
-# Toolchain sanity
+# Bombchu Benchmark
+#
+#   make                 Wii build      -> bombchu-wii.dol
+#   make PLATFORM=gc     GameCube build -> bombchu-gc.dol
+#   make OGC=$(DEVKITPRO)/libogc2       build against libogc2 instead of libogc
 #---------------------------------------------------------------------------------
 
 ifeq ($(strip $(DEVKITPRO)),)
@@ -18,27 +14,47 @@ ifeq ($(strip $(DEVKITPPC)),)
 $(error DEVKITPPC is not set)
 endif
 
-#---------------------------------------------------------------------------------
-# Source discovery
-#---------------------------------------------------------------------------------
-
-CFILES := $(foreach dir,$(SOURCES),$(wildcard $(dir)/*.c))
-OFILES := $(CFILES:.c=.o)
+include $(DEVKITPPC)/base_tools
 
 #---------------------------------------------------------------------------------
-# libogc2 rules
+# Platform
 #---------------------------------------------------------------------------------
 
-include $(DEVKITPPC)/wii_rules
+PLATFORM ?= wii
+
+ifeq ($(PLATFORM),wii)
+MACHDEP := -DGEKKO -mrvl -mcpu=750 -meabi -mhard-float
+OGC_LIBDIR := wii
+else ifeq ($(PLATFORM),gc)
+MACHDEP := -DGEKKO -mogc -mcpu=750 -meabi -mhard-float
+OGC_LIBDIR := cube
+else
+$(error PLATFORM must be wii or gc)
+endif
+
+OGC ?= $(DEVKITPRO)/libogc
+
+TARGET  := bombchu-$(PLATFORM)
+BUILD   := build/$(PLATFORM)
+SOURCES := src benchmarks ui ui/themes
+INCLUDES := include ui ui/themes
 
 #---------------------------------------------------------------------------------
 # Flags
 #---------------------------------------------------------------------------------
 
-CFLAGS += -Wall -O2 -g
-CFLAGS += -Isrc -Ibenchmarks -Iui
-CFLAGS += -I$(DEVKITPRO)/libogc2/include
-CFLAGS += -DGEKKO -DHW_RVL -mrvl
+CFLAGS  := -Wall -O2 -g $(MACHDEP)
+CFLAGS  += $(foreach dir,$(INCLUDES),-I$(dir)) -I$(OGC)/include
+LDFLAGS := -g $(MACHDEP) -Wl,-Map,$(BUILD)/$(TARGET).map
+LIBS    := -L$(OGC)/lib/$(OGC_LIBDIR) -lfat -logc -lm
+
+#---------------------------------------------------------------------------------
+# Sources
+#---------------------------------------------------------------------------------
+
+CFILES := $(foreach dir,$(SOURCES),$(wildcard $(dir)/*.c))
+OFILES := $(addprefix $(BUILD)/,$(CFILES:.c=.o))
+DEPS   := $(OFILES:.o=.d)
 
 #---------------------------------------------------------------------------------
 # Targets
@@ -48,20 +64,17 @@ CFLAGS += -DGEKKO -DHW_RVL -mrvl
 
 all: $(TARGET).dol
 
-$(TARGET).elf: $(OFILES)
+$(TARGET).dol: $(BUILD)/$(TARGET).elf
+	elf2dol $< $@
+
+$(BUILD)/$(TARGET).elf: $(OFILES)
 	$(CC) $(OFILES) $(LDFLAGS) $(LIBS) -o $@
 
-$(TARGET).dol: $(TARGET).elf
-	$(ELF2DOL) $< $@
-
-src/%.o: src/%.c
-	$(CC) $(CFLAGS) -c $< -o $@
-
-benchmarks/%.o: benchmarks/%.c
-	$(CC) $(CFLAGS) -c $< -o $@
-
-ui/%.o: ui/%.c
-	$(CC) $(CFLAGS) -c $< -o $@
+$(BUILD)/%.o: %.c
+	@mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) -MMD -MP -c $< -o $@
 
 clean:
-	rm -f $(OFILES) $(TARGET).elf $(TARGET).dol
+	rm -rf build bombchu-wii.dol bombchu-gc.dol
+
+-include $(DEPS)
