@@ -24,15 +24,27 @@ PLATFORM ?= wii
 
 ifeq ($(PLATFORM),wii)
 MACHDEP := -DGEKKO -mrvl -mcpu=750 -meabi -mhard-float
+OGC_PLATFORM := wii
 OGC_LIBDIR := wii
 else ifeq ($(PLATFORM),gc)
 MACHDEP := -DGEKKO -mogc -mcpu=750 -meabi -mhard-float
+OGC_PLATFORM := gamecube
 OGC_LIBDIR := cube
 else
 $(error PLATFORM must be wii or gc)
 endif
 
 OGC ?= $(DEVKITPRO)/libogc2
+
+# libogc2 installs per platform (libogc2/wii/{include,lib});
+# stock libogc uses libogc/include and libogc/lib/<wii|cube>
+ifneq ($(wildcard $(OGC)/$(OGC_PLATFORM)/lib),)
+OGC_INC := $(OGC)/$(OGC_PLATFORM)/include
+OGC_LIB := $(OGC)/$(OGC_PLATFORM)/lib
+else
+OGC_INC := $(OGC)/include
+OGC_LIB := $(OGC)/lib/$(OGC_LIBDIR)
+endif
 
 TARGET  := bombchu-$(PLATFORM)
 BUILD   := build/$(PLATFORM)
@@ -44,9 +56,9 @@ INCLUDES := include ui ui/themes
 #---------------------------------------------------------------------------------
 
 CFLAGS  := -Wall -O2 -g $(MACHDEP)
-CFLAGS  += $(foreach dir,$(INCLUDES),-I$(dir)) -I$(OGC)/include
+CFLAGS  += $(foreach dir,$(INCLUDES),-I$(dir)) -I$(OGC_INC)
 LDFLAGS := -g $(MACHDEP) -Wl,-Map,$(BUILD)/$(TARGET).map
-LIBS    := -L$(OGC)/lib/$(OGC_LIBDIR) -lfat -logc -lm
+LIBS    := -L$(OGC_LIB) -lfat -logc -lm
 
 #---------------------------------------------------------------------------------
 # Sources
