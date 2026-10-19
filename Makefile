@@ -3,7 +3,7 @@
 #
 #   make                 Wii build      -> bombchu-wii.dol
 #   make PLATFORM=gc     GameCube build -> bombchu-gc.dol
-#   make OGC=$(DEVKITPRO)/libogc2       build against libogc2 instead of libogc
+#   make OGC=$(DEVKITPRO)/libogc        build against stock libogc instead of libogc2
 #---------------------------------------------------------------------------------
 
 ifeq ($(strip $(DEVKITPRO)),)
@@ -32,7 +32,7 @@ else
 $(error PLATFORM must be wii or gc)
 endif
 
-OGC ?= $(DEVKITPRO)/libogc
+OGC ?= $(DEVKITPRO)/libogc2
 
 TARGET  := bombchu-$(PLATFORM)
 BUILD   := build/$(PLATFORM)
