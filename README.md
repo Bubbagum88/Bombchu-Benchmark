@@ -37,6 +37,7 @@ images/bombchu/      Bombchu ASCII art frames
 images/title/        Title screen ASCII art frames
 images/previews/     Rendered previews of the ASCII art
 images/source/       Source artwork the ASCII art was made from
+docs/                Developer guides
 .github/workflows/   GitHub Actions build
 Makefile             Build script (devkitPPC + libogc2)
 ```
@@ -57,6 +58,8 @@ make OGC=$DEVKITPRO/libogc   # build against stock libogc instead of libogc2
 ```
 
 Every push and pull request is also built by GitHub Actions for both platforms. The `.dol` files are attached to each run as artifacts, and the workflow can be started by hand from the Actions tab.
+
+New to devkitPPC or libogc2? [docs/toolchain-guide.md](docs/toolchain-guide.md) explains the toolchain, the libraries and headers the code uses, and how to add a new benchmark.
 
 ---
 
