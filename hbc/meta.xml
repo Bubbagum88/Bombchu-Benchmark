@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<app version="1">
+  <name>Bombchu Benchmark</name>
+  <coder>Bubbagum88</coder>
+  <version>0.0.1</version>
+  <short_description>Wii/GameCube performance benchmarks</short_description>
+  <long_description>Early-stage system performance benchmark for Wii and GameCube homebrew. Currently measures SD card write and read speed. Use a GameCube controller in port 1. Source: github.com/Bubbagum88/Bombchu-Benchmark</long_description>
+</app>

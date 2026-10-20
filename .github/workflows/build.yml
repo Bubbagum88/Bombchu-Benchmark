@@ -3,6 +3,7 @@ name: Build Bombchu Benchmark
 on:
   push:
     branches: [ main ]
+    tags: [ 'v*' ]
   pull_request:
     branches: [ main ]
   workflow_dispatch:
@@ -27,9 +28,11 @@ jobs:
       run: |
         dkp-pacman-key --recv-keys C8A2759C315CFBC3429CC2E422B803BA8AA3D7CE --keyserver hkps://keyserver.ubuntu.com
         dkp-pacman-key --lsign-key C8A2759C315CFBC3429CC2E422B803BA8AA3D7CE
-        # The libogc2 repo must come before [dkp-libs] so its packages take precedence
-        sed -i '/^\[dkp-libs\]/i [libogc2-devkitpro]\nServer = https://packages.libogc2.org/devkitpro/linux/$arch\nServer = https://packages.extremscorner.org/devkitpro/linux/$arch\n' /opt/devkitpro/pacman/etc/pacman.conf
-        dkp-pacman -Sy --noconfirm --needed libogc2 libogc2-libdvm
+        # Sync only the libogc2 repo: pkg.devkitpro.org often returns 403 to CI runners,
+        # and the image already has everything else libogc2 needs
+        awk '/^\[/{skip = ($0 ~ /^\[dkp-/)} !skip' /opt/devkitpro/pacman/etc/pacman.conf > libogc2-pacman.conf
+        printf '\n[libogc2-devkitpro]\nServer = https://packages.libogc2.org/devkitpro/linux/$arch\nServer = https://packages.extremscorner.org/devkitpro/linux/$arch\n' >> libogc2-pacman.conf
+        dkp-pacman --config libogc2-pacman.conf -Sy --noconfirm --needed libogc2 libogc2-libdvm
 
     - name: Build project
       run: make PLATFORM=${{ matrix.platform }}
@@ -40,3 +43,46 @@ jobs:
         name: bombchu-${{ matrix.platform }}
         path: bombchu-${{ matrix.platform }}.dol
         if-no-files-found: error
+
+    - name: Package Homebrew Channel folder
+      if: matrix.platform == 'wii'
+      run: |
+        mkdir -p package/apps/bombchu
+        cp bombchu-wii.dol package/apps/bombchu/boot.dol
+        cp hbc/meta.xml hbc/icon.png package/apps/bombchu/
+
+    - name: Upload Homebrew Channel artifact
+      if: matrix.platform == 'wii'
+      uses: actions/upload-artifact@v5
+      with:
+        name: bombchu-benchmark-wii-hbc
+        path: package/
+        if-no-files-found: error
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+    - name: Download build artifacts
+      uses: actions/download-artifact@v5
+      with:
+        path: artifacts
+
+    - name: Assemble release files
+      run: |
+        (cd artifacts/bombchu-benchmark-wii-hbc && zip -r ../../bombchu-benchmark-wii.zip apps)
+        cp artifacts/bombchu-wii/bombchu-wii.dol .
+        cp artifacts/bombchu-gc/bombchu-gc.dol .
+
+    - name: Publish GitHub release
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        gh release create "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --title "$GITHUB_REF_NAME" --generate-notes \
+          bombchu-benchmark-wii.zip bombchu-wii.dol bombchu-gc.dol \
+          || gh release upload "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --clobber \
+          bombchu-benchmark-wii.zip bombchu-wii.dol bombchu-gc.dol
