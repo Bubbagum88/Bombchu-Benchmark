@@ -82,6 +82,7 @@ images/bombchu/      Bombchu ASCII art frames
 images/title/        Title screen ASCII art frames
 images/previews/     Rendered previews of the ASCII art
 images/source/       Source artwork the ASCII art was made from
+docs/                Developer guides
 .github/workflows/   GitHub Actions build
 Makefile             Build script (devkitPPC + libogc2)
 ```
@@ -105,6 +106,8 @@ You don't need a local toolchain: every push and pull request is built by GitHub
 
 ### Making a release
 Push a tag starting with `v` (for example `git tag v0.0.1 && git push origin v0.0.1`, or create the release from GitHub's Releases page with a new tag). The workflow builds both platforms and publishes a GitHub release with the Wii zip and the GameCube `.dol` attached. Keep the version in `hbc/meta.xml` in step with the tag.
+
+New to devkitPPC or libogc2? [docs/toolchain-guide.md](docs/toolchain-guide.md) explains the toolchain, the libraries and headers the code uses, and how to add a new benchmark.
 
 ---
 
